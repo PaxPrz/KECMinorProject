@@ -10,6 +10,8 @@ TagManager:
   - AsteroidGreen
   - AsteroidRed
   - UIManager
+  - Background
+  - BgMovement
   layers:
   - Default
   - TransparentFX

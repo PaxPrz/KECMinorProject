@@ -6,7 +6,7 @@ public class Movement2D : MonoBehaviour {
 	private Vector2 ray;
 	private RaycastHit2D hit;
 	private Camera camera;
-	public float force = 50f;
+	public float force = 30f;
 	public float maxforce=15f;
 	// Use this for initialization
 	void Start () {

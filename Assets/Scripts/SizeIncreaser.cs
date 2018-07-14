@@ -5,14 +5,38 @@ using UnityEngine;
 public class SizeIncreaser : MonoBehaviour {
 	public GameObject sound;
 	public GameObject explosion;
-	public float divratio = 10f;
+	public float divratio = 5f;
+	private Vector2 impactForce;
+	public GameObject bgMovement;
+	private Rigidbody2D bgMovementVel;
 	// Use this for initialization
+
+	void Start(){
+		if (gameObject.tag == "Asteroid") {
+			bgMovementVel = bgMovement.GetComponent<Rigidbody2D> ();
+		}
+	}
 
 
 	void OnCollisionEnter2D(Collision2D col){
+		if (gameObject.tag == "Asteroid") {
+			impactForce = col.relativeVelocity;
+			impactForce = col.gameObject.transform.localScale.x * impactForce ;
+
+			for (int i = 0; i < Spawner.asteroidList.Count; i++) {
+				if (Spawner.asteroidList [i] == null) {
+					continue;
+				}
+				Rigidbody2D rb = (Spawner.asteroidList [i].GetComponent<Rigidbody2D> ());
+				rb.velocity = resultantVector (rb.velocity, -impactForce);
+			}
+			bgMovementVel.velocity = resultantVector (bgMovementVel.velocity, impactForce);
+
+		} 
+
 		if (col.gameObject.tag == "Asteroid") {
-			
-		} else if (gameObject.tag == col.gameObject.tag) {
+			//Do nothing
+		}else if (gameObject.tag == col.gameObject.tag) {
 			if (gameObject.transform.localScale.x > col.gameObject.transform.localScale.x) {
 				gameObject.transform.localScale *= (1 + col.gameObject.transform.localScale.x / divratio);
 				Destroy (col.gameObject);
@@ -35,6 +59,17 @@ public class SizeIncreaser : MonoBehaviour {
 
 			//StartCoroutine (ExplosionDestroyer (gameObject.transform));
 		}
+	}
+
+	private Vector2 resultantVector(Vector2 prev, Vector2 force){
+		/*
+		float cosTheta, mag;
+		float prevMag = prev.magnitude;
+		float forceMag = force.magnitude;
+		cosTheta = Mathf.Cos (Vector2.Angle (prev, force));
+		mag = Mathf.Sqrt (Mathf.Pow (prevMag, 2) + Mathf.Pow (forceMag, 2) + 2 * prevMag * forceMag * cosTheta);
+		*/
+		return new Vector2 (prev.x + force.x, prev.y + force.y);
 	}
 	/*
 	private IEnumerator ExplosionDestroyer(Transform t){
