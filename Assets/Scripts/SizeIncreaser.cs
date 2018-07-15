@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SizeIncreaser : MonoBehaviour {
 	public GameObject sound;
-	public GameObject explosion;
+	public GameObject PlayerExplosion;
 	public float divratio = 5f;
 	private Vector2 impactForce;
 	public GameObject bgMovement;
@@ -37,13 +37,21 @@ public class SizeIncreaser : MonoBehaviour {
 		if (col.gameObject.tag == "Asteroid") {
 			//Do nothing
 		}else if (gameObject.tag == col.gameObject.tag) {
+			
+
 			if (gameObject.transform.localScale.x > col.gameObject.transform.localScale.x) {
 				gameObject.transform.localScale *= (1 + col.gameObject.transform.localScale.x / divratio);
+				Instantiate(PlayerExplosion, transform.position, transform.rotation);
+				Instantiate (sound);
+
 				Destroy (col.gameObject);
+
 				//StartCoroutine (ExplosionDestroyer (gameObject.transform));
 			}
 
 		} else if(gameObject.transform.tag!="Asteroid" && col.gameObject.transform.tag!="Asteroid"){
+			Instantiate(PlayerExplosion, transform.position, transform.rotation);
+			Instantiate (sound);
 			Destroy (gameObject);
 			Destroy (col.gameObject);
 
@@ -51,11 +59,23 @@ public class SizeIncreaser : MonoBehaviour {
 		}
 		//for Main Asteroid
 		if (col.gameObject.tag == "AsteroidWhite" && gameObject.tag == "Asteroid") {
+
+
+
 			gameObject.transform.localScale *= (1 + col.gameObject.transform.localScale.x / divratio);
+
+			Instantiate(PlayerExplosion, transform.position, transform.rotation);
+			Instantiate (sound);
 			Destroy (col.gameObject);
+
+
 		} else if (col.gameObject.tag != "AsteroidWhite" && gameObject.tag == "Asteroid") {
 			gameObject.transform.localScale *= (1 - col.gameObject.transform.localScale.x / divratio);
+
+			Instantiate(PlayerExplosion, transform.position, transform.rotation);
+			Instantiate (sound);
 			Destroy (col.gameObject);
+
 
 			//StartCoroutine (ExplosionDestroyer (gameObject.transform));
 		}

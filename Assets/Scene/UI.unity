@@ -77,15 +77,18 @@ LightmapSettings:
     m_PVRDirectSampleCount: 32
     m_PVRSampleCount: 500
     m_PVRBounces: 2
-    m_PVRFiltering: 0
+    m_PVRFilterTypeDirect: 0
+    m_PVRFilterTypeIndirect: 0
+    m_PVRFilterTypeAO: 0
     m_PVRFilteringMode: 1
     m_PVRCulling: 1
     m_PVRFilteringGaussRadiusDirect: 1
     m_PVRFilteringGaussRadiusIndirect: 5
     m_PVRFilteringGaussRadiusAO: 2
-    m_PVRFilteringAtrousColorSigma: 1
-    m_PVRFilteringAtrousNormalSigma: 1
-    m_PVRFilteringAtrousPositionSigma: 1
+    m_PVRFilteringAtrousPositionSigmaDirect: 0.5
+    m_PVRFilteringAtrousPositionSigmaIndirect: 2
+    m_PVRFilteringAtrousPositionSigmaAO: 1
+    m_ShowResolutionOverlay: 1
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -107,6 +110,8 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
+    debug:
+      m_Flags: 0
   m_NavMeshData: {fileID: 0}
 --- !u!1 &19637019
 GameObject:
@@ -644,6 +649,7 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -659,6 +665,7 @@ MeshRenderer:
   m_PreserveUVs: 1
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -1079,6 +1086,23 @@ Prefab:
       propertyPath: m_Constraints
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114968334827831768, guid: 83cf70b4b35b3db4797bc2a79fe13356,
+        type: 2}
+      propertyPath: sound
+      value: 
+      objectReference: {fileID: 1340063579404744, guid: 190e837708b3a1b488c6c1b946a2db67,
+        type: 2}
+    - target: {fileID: 114968334827831768, guid: 83cf70b4b35b3db4797bc2a79fe13356,
+        type: 2}
+      propertyPath: explosion
+      value: 
+      objectReference: {fileID: 100008, guid: 2d0355a33454ca543a0c2c8c0a00b310, type: 2}
+    - target: {fileID: 114968334827831768, guid: 83cf70b4b35b3db4797bc2a79fe13356,
+        type: 2}
+      propertyPath: playerExplosion
+      value: 
+      objectReference: {fileID: 1059973667294170, guid: 9d6f1dccba4b6f44486b417852e42589,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 83cf70b4b35b3db4797bc2a79fe13356, type: 2}
   m_IsPrefabParent: 0
@@ -1428,6 +1452,23 @@ Prefab:
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114968334827831768, guid: 83cf70b4b35b3db4797bc2a79fe13356,
+        type: 2}
+      propertyPath: sound
+      value: 
+      objectReference: {fileID: 1340063579404744, guid: 190e837708b3a1b488c6c1b946a2db67,
+        type: 2}
+    - target: {fileID: 114968334827831768, guid: 83cf70b4b35b3db4797bc2a79fe13356,
+        type: 2}
+      propertyPath: explosion
+      value: 
+      objectReference: {fileID: 100008, guid: 2d0355a33454ca543a0c2c8c0a00b310, type: 2}
+    - target: {fileID: 114968334827831768, guid: 83cf70b4b35b3db4797bc2a79fe13356,
+        type: 2}
+      propertyPath: playerExplosion
+      value: 
+      objectReference: {fileID: 1059973667294170, guid: 9d6f1dccba4b6f44486b417852e42589,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 83cf70b4b35b3db4797bc2a79fe13356, type: 2}
   m_IsPrefabParent: 0
@@ -3302,7 +3343,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
-  m_StereoMirrorMode: 0
 --- !u!4 &1685891669
 Transform:
   m_ObjectHideFlags: 0
@@ -3491,6 +3531,23 @@ Prefab:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 114459098793907706, guid: 655a08c87eeb397438a466c7a5cd902c,
+        type: 2}
+      propertyPath: sound
+      value: 
+      objectReference: {fileID: 1340063579404744, guid: 190e837708b3a1b488c6c1b946a2db67,
+        type: 2}
+    - target: {fileID: 114459098793907706, guid: 655a08c87eeb397438a466c7a5cd902c,
+        type: 2}
+      propertyPath: explosion
+      value: 
+      objectReference: {fileID: 100008, guid: 2d0355a33454ca543a0c2c8c0a00b310, type: 2}
+    - target: {fileID: 114459098793907706, guid: 655a08c87eeb397438a466c7a5cd902c,
+        type: 2}
+      propertyPath: playerExplosion
+      value: 
+      objectReference: {fileID: 1059973667294170, guid: 9d6f1dccba4b6f44486b417852e42589,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 655a08c87eeb397438a466c7a5cd902c, type: 2}
   m_IsPrefabParent: 0
@@ -3545,6 +3602,23 @@ Prefab:
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114176085494981450, guid: 51f7a04d4ca7a904f938a6875c281e10,
+        type: 2}
+      propertyPath: sound
+      value: 
+      objectReference: {fileID: 1340063579404744, guid: 190e837708b3a1b488c6c1b946a2db67,
+        type: 2}
+    - target: {fileID: 114176085494981450, guid: 51f7a04d4ca7a904f938a6875c281e10,
+        type: 2}
+      propertyPath: explosion
+      value: 
+      objectReference: {fileID: 100008, guid: 2d0355a33454ca543a0c2c8c0a00b310, type: 2}
+    - target: {fileID: 114176085494981450, guid: 51f7a04d4ca7a904f938a6875c281e10,
+        type: 2}
+      propertyPath: playerExplosion
+      value: 
+      objectReference: {fileID: 1059973667294170, guid: 9d6f1dccba4b6f44486b417852e42589,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 51f7a04d4ca7a904f938a6875c281e10, type: 2}
   m_IsPrefabParent: 0

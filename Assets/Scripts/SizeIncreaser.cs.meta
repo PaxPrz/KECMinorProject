@@ -1,10 +1,14 @@
 fileFormatVersion: 2
 guid: 03286715d443dc640800bff9846249f4
-timeCreated: 1530884106
+timeCreated: 1531640670
 licenseType: Free
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - sound: {instanceID: 0}
+  - PlayerExplosion: {instanceID: 0}
+  - bgMovement: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
