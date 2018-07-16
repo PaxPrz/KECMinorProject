@@ -13,7 +13,7 @@ public class Spawner : MonoBehaviour {
 	private Renderer nearRen, farRen;
 
 	//****Keeps list of asteroids****
-	public static List<GameObject> asteroidList;
+	public static List<GameObject> asteroidList = new List<GameObject>();
 	//*******************************
 
 	public GameObject[] canSpawn;
@@ -32,7 +32,6 @@ public class Spawner : MonoBehaviour {
 		farRen = spawnFar.GetComponent<Renderer> ();
 		Debug.Log ("spawnrate:" +spawnRate);
 		//asteroids = new List<Asteroid> ();
-		asteroidList = new List<GameObject>();
 		StartCoroutine (spawnFunction ());
 		StartCoroutine (Destroyer ());
 	}

@@ -8,7 +8,7 @@ public class SizeIncreaser : MonoBehaviour {
 	public float divratio = 5f;
 	private Vector2 impactForce;
 	public GameObject bgMovement;
-	private Rigidbody2D bgMovementVel;
+	private Rigidbody2D bgMovementVel=null;
 	// Use this for initialization
 
 	void Start(){
@@ -41,8 +41,7 @@ public class SizeIncreaser : MonoBehaviour {
 
 			if (gameObject.transform.localScale.x > col.gameObject.transform.localScale.x) {
 				gameObject.transform.localScale *= (1 + col.gameObject.transform.localScale.x / divratio);
-				Instantiate(PlayerExplosion, transform.position, transform.rotation);
-				Instantiate (sound);
+				callExplosion (col);
 
 				Destroy (col.gameObject);
 
@@ -50,8 +49,7 @@ public class SizeIncreaser : MonoBehaviour {
 			}
 
 		} else if(gameObject.transform.tag!="Asteroid" && col.gameObject.transform.tag!="Asteroid"){
-			Instantiate(PlayerExplosion, transform.position, transform.rotation);
-			Instantiate (sound);
+			callExplosion (col);
 			Destroy (gameObject);
 			Destroy (col.gameObject);
 
@@ -64,20 +62,29 @@ public class SizeIncreaser : MonoBehaviour {
 
 			gameObject.transform.localScale *= (1 + col.gameObject.transform.localScale.x / divratio);
 
-			Instantiate(PlayerExplosion, transform.position, transform.rotation);
-			Instantiate (sound);
+			callExplosion (col);
 			Destroy (col.gameObject);
 
 
 		} else if (col.gameObject.tag != "AsteroidWhite" && gameObject.tag == "Asteroid") {
 			gameObject.transform.localScale *= (1 - col.gameObject.transform.localScale.x / divratio);
-
-			Instantiate(PlayerExplosion, transform.position, transform.rotation);
-			Instantiate (sound);
+			if (GameSettings.isVibrate) {
+				Debug.Log ("Must Vibrate");
+				Camera.main.GetComponent<CameraMover> ().shakeCamera ();
+			}
+			callExplosion (col);
 			Destroy (col.gameObject);
 
 
 			//StartCoroutine (ExplosionDestroyer (gameObject.transform));
+		}
+	}
+
+	void callExplosion(Collision2D col){
+		if (col.gameObject.GetComponent<SpriteRenderer> ().isVisible) {
+			GameObject explosion = Instantiate (PlayerExplosion, transform.position, transform.rotation);
+			explosion.transform.localScale = col.gameObject.transform.localScale / 5f;
+			Instantiate (sound);
 		}
 	}
 
