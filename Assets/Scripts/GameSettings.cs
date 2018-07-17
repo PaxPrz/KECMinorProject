@@ -11,10 +11,18 @@ public class GameSettings:MonoBehaviour{
 		public static bool isVibrate = true;
 		public static float spawnRate = 0.5f;
 	public Slider spawner;
+	public Slider forceSlider;
+	public Toggle musicToggle;
+	public Toggle vibrateToggle;
 	private AudioSource source;
 
 	void Start(){
 		spawner.value = spawnRate;
+		PlaySound (isSound);
+		spawner.value = spawnRate;
+		forceSlider.value = force;
+		musicToggle.isOn = isSound;
+		vibrateToggle.isOn = isVibrate;
 	}
 
 		public void PlaySound(bool sound){

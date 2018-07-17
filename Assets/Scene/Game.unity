@@ -3438,6 +3438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c95c7fb47a45f404aa86bb50431ee192, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 2079651469}
   force: 30
   maxforce: 15
 --- !u!4 &2093606443

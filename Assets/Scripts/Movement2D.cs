@@ -5,13 +5,14 @@ using UnityEngine;
 public class Movement2D : MonoBehaviour {
 	private Vector2 ray;
 	private RaycastHit2D hit;
+	public GameObject cam;
 	private Camera camera;
 	public float force = 30f;
 	public float maxforce=15f;
 	// Use this for initialization
 	void Start () {
 		StartCoroutine (controlMovement ());
-		camera = Camera.main;
+		camera = cam.GetComponent<Camera> ();
 		force = GameSettings.force;
 	}
 

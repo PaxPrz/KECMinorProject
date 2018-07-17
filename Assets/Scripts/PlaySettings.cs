@@ -41,8 +41,12 @@ public class PlaySettings : MonoBehaviour {
 
 	public void onBack(){
 		Time.timeScale = 1.0f;
+		UIManager.GetComponent<Movement2D> ().enabled = true;
+		paused = false;
 		SceneManager.LoadScene ("UI");
-
+		if (UIManager != null) {
+			Destroy (UIManager);
+		}
 	}
 
 	public void onVibrate(){
@@ -66,6 +70,7 @@ public class PlaySettings : MonoBehaviour {
 	public void onRestart(){
 		SceneManager.LoadScene ("Game");
 		Time.timeScale = 1.0f;
+		paused = false;
 	}
 
 }

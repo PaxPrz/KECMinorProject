@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SizeIncreaser : MonoBehaviour {
 	public GameObject sound;
@@ -12,7 +13,7 @@ public class SizeIncreaser : MonoBehaviour {
 	// Use this for initialization
 
 	void Start(){
-		if (gameObject.tag == "Asteroid") {
+		if (gameObject.tag == "Asteroid" && SceneManager.GetActiveScene()==SceneManager.GetSceneByName("Game")) {
 			bgMovementVel = bgMovement.GetComponent<Rigidbody2D> ();
 		}
 	}
@@ -30,8 +31,9 @@ public class SizeIncreaser : MonoBehaviour {
 				Rigidbody2D rb = (Spawner.asteroidList [i].GetComponent<Rigidbody2D> ());
 				rb.velocity = resultantVector (rb.velocity, -impactForce);
 			}
-			bgMovementVel.velocity = resultantVector (bgMovementVel.velocity, impactForce);
-
+			if (SceneManager.GetActiveScene () == SceneManager.GetSceneByName ("Game")) {
+				bgMovementVel.velocity = resultantVector (bgMovementVel.velocity, impactForce);
+			}
 		} 
 
 		if (col.gameObject.tag == "Asteroid") {
