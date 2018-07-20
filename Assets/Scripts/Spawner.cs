@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
 public class Spawner : MonoBehaviour {
@@ -19,8 +20,21 @@ public class Spawner : MonoBehaviour {
 	public GameObject[] canSpawn;
 	public GameObject mainAsteroid;
 
+	public GameObject comet;
 
+	public Slider stressMeter;
+
+	private GameObject c;
 	GameObject UIManager;
+
+	//*** For blackhole ***
+	public GameObject blackHole;
+	public float minBlackHoleSpawnTime = 120.0f;
+	private float randomBlackHoleTime;
+	private GameObject currentBlackHole;
+	public GameObject forBgMovement;
+	private float firstDistance;
+	//**********************
 
 	// Use this for initialization
 	void Start () {
@@ -34,6 +48,7 @@ public class Spawner : MonoBehaviour {
 		//asteroids = new List<Asteroid> ();
 		StartCoroutine (spawnFunction ());
 		StartCoroutine (Destroyer ());
+		StartCoroutine (GenerateBlackHole ());
 	}
 	
 	// Update is called once per frame
@@ -43,6 +58,29 @@ public class Spawner : MonoBehaviour {
 			if(UIManager!=null)
 				Destroy (UIManager);
 		}
+
+		if (c != null) {
+			SpriteRenderer r = c.GetComponentInChildren<SpriteRenderer> ();
+			if (r == null) {
+				Debug.Log ("Error: no sprite comet");
+				return;
+			}
+			if (r.isVisible) {
+				c.GetComponent<CircleCollider2D> ().isTrigger = false;
+				asteroidList.Add (c);
+				c = null;
+			}
+		}
+			
+		if (currentBlackHole != null) {
+			if (Vector2.Distance (mainAsteroid.transform.position, currentBlackHole.transform.position) > firstDistance+5f) {
+				Destroy (currentBlackHole);
+				currentBlackHole = null;
+				Debug.Log ("Blackhole destroyed");
+			}
+		}
+
+		stressMeter.value -= Time.deltaTime*0.02f;
 	}
 
 	private IEnumerator spawnFunction(){
@@ -71,23 +109,6 @@ public class Spawner : MonoBehaviour {
 		}
 	}
 
-	/*
-	private IEnumerator Monitor(){
-		float cosTheta;
-		while (true) {
-			foreach (Asteroid a in asteroids) {
-				if (a.previousPos != Vector2.zero) {
-					cosTheta = Mathf.Cos (Vector2.Angle (a.previousPos - (Vector2)a.gameObj.transform.position, (Vector2)mainAsteroid.transform.position - (Vector2)a.gameObj.transform.position));
-					if (cosTheta < 0 && !a.gameObj.GetComponent<Renderer> ().isVisible) {
-						a.DeleteAsteroid ();
-						asteroids.Remove (a);
-					}
-				}
-			}
-			yield return null;
-		}
-	}
-	*/
 
 	private IEnumerator Destroyer(){
 		float maxDistance = spawnFar.transform.position.magnitude;
@@ -103,7 +124,45 @@ public class Spawner : MonoBehaviour {
 					if(d!=null)
 						Destroy (d);
 				}
+				SizeIncreaser s=null;
+				if (asteroidList [i] != null) {
+					 s = asteroidList [i].GetComponent<SizeIncreaser> ();
+				}
+				if (s != null) {
+					if (s.wasVisible && s.touched) {
+						if (!asteroidList [i].GetComponent<SpriteRenderer> ().isVisible) {
+							stressMeter.value += asteroidList [i].transform.localScale.x * 0.5f / mainAsteroid.transform.localScale.x;
+							s.wasVisible = false;
+							Debug.Log ("Stress: " + stressMeter.value+" Increased");	
+						}
+					}
+				}
+				if(stressMeter.value==stressMeter.maxValue){
+					if (!nearRen.isVisible) {
+						Transform t = spawnPointNear [Random.Range (0, spawnPointNear.Length)];
+						c = Instantiate<GameObject> (comet, t.position, Quaternion.identity);
+						c.GetComponent<CircleCollider2D> ().isTrigger = true;
+						c.GetComponent<Rigidbody2D> ().velocity = ((Vector2)mainAsteroid.transform.position - (Vector2)c.transform.position) / 1f;
+					}
+					stressMeter.value = stressMeter.minValue;
+				}
 				yield return null;
+			}
+		}
+	}
+
+	private IEnumerator GenerateBlackHole(){
+		randomBlackHoleTime = Random.Range (0.0f, 60.0f);
+		Rigidbody2D forbgrigid = forBgMovement.GetComponent<Rigidbody2D> ();
+		while (true) {
+			yield return new WaitForSeconds(minBlackHoleSpawnTime+randomBlackHoleTime);
+			if (currentBlackHole == null && forbgrigid.velocity.magnitude>1.0f) {
+				currentBlackHole = Instantiate<GameObject> (blackHole, forbgrigid.velocity*5f, Quaternion.identity);
+				currentBlackHole.transform.localScale = mainAsteroid.transform.localScale;
+				firstDistance = Vector2.Distance (mainAsteroid.transform.position, currentBlackHole.transform.position);
+				currentBlackHole.GetComponent<Rigidbody2D> ().velocity = -forbgrigid.velocity*mainAsteroid.transform.localScale.x/4f;
+				Debug.Log ("BlackHole Created: "+currentBlackHole.transform.position.ToString());
+				asteroidList.Add (currentBlackHole);
 			}
 		}
 	}

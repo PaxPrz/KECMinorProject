@@ -126,8 +126,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sound: {fileID: 1340063579404744, guid: 190e837708b3a1b488c6c1b946a2db67, type: 2}
   PlayerExplosion: {fileID: 100002, guid: 6ecf76dc4f268d340b2666896a954bcc, type: 2}
-  divratio: 10
+  divratio: 5
   bgMovement: {fileID: 0}
+  touched: 0
+  wasVisible: 0
+  gameManager: {fileID: 0}
 --- !u!212 &212880905451555154
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -137,7 +140,6 @@ SpriteRenderer:
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -153,7 +155,6 @@ SpriteRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 0
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5

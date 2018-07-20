@@ -12,6 +12,9 @@ TagManager:
   - UIManager
   - Background
   - BgMovement
+  - SpaceShip
+  - Comet
+  - BlackHole
   layers:
   - Default
   - TransparentFX
@@ -21,7 +24,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - Blackhole
   - 
   - 
   - 

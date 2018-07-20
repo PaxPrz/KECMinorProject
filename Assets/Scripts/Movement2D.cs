@@ -46,10 +46,15 @@ public class Movement2D : MonoBehaviour {
 				dirn = dirn * force / totaltime;
 				dirn.Set (Mathf.Clamp (dirn.x, -maxforce, maxforce), Mathf.Clamp (dirn.y, -maxforce, maxforce));
 				//Debug.Log ("Force: " + dirn.ToString ());
-				if (rb.gameObject.transform.tag != "Asteroid") {
-					rb.velocity = dirn;
+				if (rb != null) {
+					if (rb.gameObject.transform.tag != "Asteroid" && rb.gameObject.transform.tag!="Comet" && rb.gameObject.transform.tag!="BlackHole") {
+						if (rb.gameObject.GetComponent<SizeIncreaser> ().touched == false) {
+							rb.velocity = dirn;
+							rb.gameObject.GetComponent<SizeIncreaser> ().touched = true;
+						}
+					}
 				}
-				Debug.Log ("Velocity: " + rb.velocity.ToString ());
+				//Debug.Log ("Velocity: " + rb.velocity.ToString ());
 				ok = false;
 			}
 			yield return null;

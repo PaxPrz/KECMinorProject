@@ -8,8 +8,10 @@ public class PlaySettings : MonoBehaviour {
 	[SerializeField]
 	public static bool paused;
 	public Canvas pauseCanvas;
+	public Canvas gameOverCanvas;
 	private GameObject UIManager;
 	private GameSettings settings;
+	public GameObject mainAsteroid;
 	// Use this for initialization
 	void Start () {
 		UIManager = GameObject.FindGameObjectWithTag ("UIManager");
@@ -20,7 +22,9 @@ public class PlaySettings : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if (mainAsteroid.transform.localScale.x <= 0.6f) {
+			GameOver ();
+		}
 	}
 
 	public void onPause(){
@@ -71,6 +75,11 @@ public class PlaySettings : MonoBehaviour {
 		SceneManager.LoadScene ("Game");
 		Time.timeScale = 1.0f;
 		paused = false;
+	}
+
+	public void GameOver(){
+		paused = true;
+		gameOverCanvas.gameObject.SetActive (true);
 	}
 
 }
