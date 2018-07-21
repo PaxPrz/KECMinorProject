@@ -5,20 +5,20 @@ using UnityEngine;
 public class Movement2D : MonoBehaviour {
 	private Vector2 ray;
 	private RaycastHit2D hit;
-	public GameObject cam;
-	private Camera camera;
+	public GameObject mycam;
+	private Camera cam;
 	public float force = 30f;
 	public float maxforce=15f;
 	// Use this for initialization
 	void Start () {
 		StartCoroutine (controlMovement ());
-		camera = cam.GetComponent<Camera> ();
+		cam = mycam.GetComponent<Camera> ();
 		force = GameSettings.force;
 	}
 
 	// Update is called once per frame
 	void Update () {
-		ray = new Vector2 (camera.ScreenToWorldPoint (Input.mousePosition).x, camera.ScreenToWorldPoint (Input.mousePosition).y);
+		ray = new Vector2 (cam.ScreenToWorldPoint (Input.mousePosition).x, cam.ScreenToWorldPoint (Input.mousePosition).y);
 		hit = Physics2D.Raycast(ray, Vector2.zero, 0f);
 		//if ((hit.rigidbody)!=null) {
 		//Debug.Log ("we hit " + hit.transform.name);
@@ -43,19 +43,21 @@ public class Movement2D : MonoBehaviour {
 				endtime = Time.time;
 				float totaltime = endtime - starttime;
 				Vector2 dirn = end - start;
-				dirn = dirn * force / totaltime;
-				dirn.Set (Mathf.Clamp (dirn.x, -maxforce, maxforce), Mathf.Clamp (dirn.y, -maxforce, maxforce));
-				//Debug.Log ("Force: " + dirn.ToString ());
-				if (rb != null) {
-					if (rb.gameObject.transform.tag != "Asteroid" && rb.gameObject.transform.tag!="Comet" && rb.gameObject.transform.tag!="BlackHole") {
-						if (rb.gameObject.GetComponent<SizeIncreaser> ().touched == false) {
-							rb.velocity = dirn;
-							rb.gameObject.GetComponent<SizeIncreaser> ().touched = true;
+				if (dirn.magnitude != 0f) {
+					dirn = dirn * force / totaltime;
+					dirn.Set (Mathf.Clamp (dirn.x, -maxforce, maxforce), Mathf.Clamp (dirn.y, -maxforce, maxforce));
+					//Debug.Log ("Force: " + dirn.ToString ());
+					if (rb != null) {
+						if (rb.gameObject.transform.tag != "Asteroid" && rb.gameObject.transform.tag != "Comet" && rb.gameObject.transform.tag != "BlackHole") {
+							if (rb.gameObject.GetComponent<SizeIncreaser> ().touched == false) {
+								rb.velocity = dirn;
+								rb.gameObject.GetComponent<SizeIncreaser> ().touched = true;
+							}
 						}
 					}
+					//Debug.Log ("Velocity: " + rb.velocity.ToString ());
+					ok = false;
 				}
-				//Debug.Log ("Velocity: " + rb.velocity.ToString ());
-				ok = false;
 			}
 			yield return null;
 		}
@@ -63,8 +65,8 @@ public class Movement2D : MonoBehaviour {
 
 	private Vector2 normalizedPosition(){
 		float posX, posY;
-		posX = (float)((camera.ScreenToWorldPoint(Input.mousePosition).x / Screen.width) - 0.5) * 2;
-		posY = (float)((camera.ScreenToWorldPoint(Input.mousePosition).y / Screen.height) - 0.5) * 2;
+		posX = (float)((cam.ScreenToWorldPoint(Input.mousePosition).x / Screen.width) - 0.5) * 2;
+		posY = (float)((cam.ScreenToWorldPoint(Input.mousePosition).y / Screen.height) - 0.5) * 2;
 
 		Vector2 pos = new Vector2 (posX, posY);
 		return pos;

@@ -3,73 +3,143 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraMover : MonoBehaviour {
-	private Transform mainAsteroid;
-	private float scale;
-	private Rigidbody2D marb;
+	public GameObject mainAsteroid;
+	private float scale, defaultScale;
+	private int currentRatio;
+	public int CurrentRatio{
+		get{ 
+			return currentRatio;
+		}
+		set{ 
+			currentRatio = value;
+		}
+	}
+	private Camera cam;
 
 	//For Shake-----------
-	private Transform thisTransform = null;
 	public float shakeTime = 1.0f;
 	public float shakeAmount = 3.0f;
 	public float shakeSpeed = 2.0f;
 	//---------------------
 
 	public float maxvelocity = 2f;
+	private float temp;
+	private float t;
 
 	// Use this for initialization
 	void Start () {
-		thisTransform = GetComponent<Transform> ();
-		GameObject temp = GameObject.FindGameObjectWithTag ("Asteroid");
-		if (temp == null) {
-			Debug.Log ("No GameObject found");
-			return;
+		cam = gameObject.GetComponent<Camera> ();
+		if (GetComponent<Camera>() == null) {
+			Debug.Log ("no camera");
 		}
-		mainAsteroid = temp.GetComponent<Transform>();
-		scale = 1;
-		marb = temp.GetComponent<Rigidbody2D> ();
+		defaultScale = (float)mainAsteroid.transform.localScale.x/cam.orthographicSize;
+		currentRatio = 1;
+		t=0f;
 	}
 
 	void Update(){
-		//This is for mainAsteroid max speed
-		if (marb.velocity.x > maxvelocity) {
-			marb.velocity = new Vector2 (maxvelocity, marb.velocity.y);
+		if (mainAsteroid.transform.localScale.x > 2.0f && currentRatio == 1) {
+			if (t < 1f) {
+				if (t == 0f) {
+					temp = cam.orthographicSize;
+				}
+				cam.orthographicSize = Mathf.Lerp (temp, 2f *temp, t);
+				t += Time.deltaTime;
+				return;
+			}
+			currentRatio = 2;
+			t = 0f;
+		} else if (mainAsteroid.transform.localScale.x < 1.8f && currentRatio == 2) {
+			if (t < 1f) {
+				if (t == 0f) {
+					temp = cam.orthographicSize;
+				}
+				cam.orthographicSize = Mathf.Lerp (temp, 0.5f * temp, t);
+				t += Time.deltaTime;
+				return;
+			}
+			currentRatio = 1;
+			t = 0f;
 		}
-		if (marb.velocity.y > maxvelocity) {
-			marb.velocity = new Vector2 (marb.velocity.x,maxvelocity);
+		else if(mainAsteroid.transform.localScale.x >3.0f && currentRatio == 2){
+			if(t<1f){
+				if(t==0f){
+					temp = cam.orthographicSize;
+				}
+				cam.orthographicSize = Mathf.Lerp(temp, 2*temp, t);
+				t+= Time.deltaTime;
+				return;
+			}
+			currentRatio = 3;
+			t = 0f;
 		}
-		//Debug.Log (marb.velocity.ToString ());
+		else if(mainAsteroid.transform.localScale.x <2.8f && currentRatio == 3){
+			if(t<1f){
+				if(t==0f){
+					temp = cam.orthographicSize;
+				}
+				cam.orthographicSize = Mathf.Lerp(temp, 0.5f*temp, t);
+				t+= Time.deltaTime;
+				return;
+			}
+			currentRatio = 2;
+			t = 0f;
+		}
+		else if(mainAsteroid.transform.localScale.x >4.0f && currentRatio == 3){
+			if(t<1f){
+				if(t==0f){
+					temp = cam.orthographicSize;
+				}
+				cam.orthographicSize = Mathf.Lerp(temp, 2f*temp, t);
+				t+= Time.deltaTime;
+				return;
+			}
+			currentRatio = 4;
+			t = 0f;
+		}
+		else if(mainAsteroid.transform.localScale.x < 3.8f && currentRatio == 4){
+			if(t<1f){
+				if(t==0f){
+					temp = cam.orthographicSize;
+				}
+				cam.orthographicSize = Mathf.Lerp(temp, 0.5f*temp, t);
+				t+= Time.deltaTime;
+				return;
+			}
+			currentRatio = 3;
+			t = 0f;
+		}
+
+		//scale = (float)mainAsteroid.transform.localScale.x/cam.orthographicSize;
+		/*
+		if (camera.orthographicSize<=temp) {
+			camera.orthographicSize = Mathf.Lerp (camera.orthographicSize, 2f * camera.orthographicSize, t);
+			t = Time.deltaTime;
+		}*/
+		/*
+		if (temp <= 0.5f * scale) {
+			scale = temp;
+			camera.orthographicSize = Mathf.Lerp (camera.orthographicSize, 0.5f * camera.orthographicSize, 1.0f);
+		}*/
 	}
+
 
 	public void shakeCamera(){
 		StartCoroutine (Shake ());
 	}
 
 	// Update is called once per frame
-	void LateUpdate () {
-		
-		//this.transform.localPosition = new Vector3 (mainAsteroid.position.x, mainAsteroid.position.y, transform.localPosition.z);
-		/*
-		float tempscale = mainAsteroid.transform.localScale.x / scale;
-		if (tempscale > 2.0f || tempscale < 0.5f) {
-			StartCoroutine (LerpPos (tempscale));
-		}
-		*/
-	}
-
-	public IEnumerator LerpPos(float tempscale){
-		yield return null;
-	}
 
 	public IEnumerator Shake(){
-		Vector3 origPosition = thisTransform.localPosition;
+		Vector3 origPosition = gameObject.transform.localPosition;
 		float elapsedTime = 0.0f;
 		while (elapsedTime <= shakeTime) {
 			Vector3 randomPoint = origPosition + Random.insideUnitSphere * shakeAmount;
-			thisTransform.localPosition = Vector3.Lerp (thisTransform.localPosition, randomPoint, Time.deltaTime * shakeSpeed);
+			gameObject.transform.localPosition = Vector3.Lerp (gameObject.transform.localPosition, randomPoint, Time.deltaTime * shakeSpeed);
 			yield return null;
 			elapsedTime += Time.deltaTime;
 		}
-		thisTransform.localPosition = origPosition;
+		gameObject.transform.localPosition = origPosition;
 	}
 
 }

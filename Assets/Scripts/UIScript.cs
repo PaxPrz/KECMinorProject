@@ -57,6 +57,7 @@ public class UIScript : MonoBehaviour {
 					if (!(g.GetComponent<Renderer> ().isVisible)) {
 						g.GetComponent<Rigidbody2D> ().velocity = new Vector2 (0f, 0f);
 						DeterminePosition (g);
+						g.GetComponent<SizeIncreaser> ().touched = false;
 					}
 				}
 			}
@@ -100,7 +101,7 @@ public class UIScript : MonoBehaviour {
 	public void Reset(){
 		foreach (GameObject g in asteroids) {
 			g.GetComponent<Rigidbody2D> ().velocity = new Vector2 (0f, 0f);
-
+			g.GetComponent<SizeIncreaser> ().touched = false;
 		}
 	}
 

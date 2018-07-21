@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class BlackHole : MonoBehaviour {
 	public float rotateSpeed = 100f;
-	public GameObject gameManager;
+	private GameObject gameManager;
+	private float mul;
+	public GameObject cam;
 	//GameObject c;
 	// Use this for initialization
 	void Start () {
-		
+		gameManager = GameObject.FindGameObjectWithTag ("GameManager");	
+		cam = GameObject.FindGameObjectWithTag ("MainCamera");
 	}
 	
 	// Update is called once per frame
@@ -17,13 +20,17 @@ public class BlackHole : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D col){
+		if (col.gameObject.tag == "Asteroid") {
+			gameManager.GetComponent<PlaySettings> ().GameOver ();
+		} else {
 			StartCoroutine (DeleteObj (col.gameObject));
-
+		}
 	}
 
 	private IEnumerator DeleteObj(GameObject col){
 		//c = col;
-		yield return new WaitUntil (()=> ((col.gameObject.transform.position.x>=gameObject.transform.position.x-0.5f)&&(col.gameObject.transform.position.x<=gameObject.transform.position.x+0.5f)&&(col.gameObject.transform.position.y>=gameObject.transform.position.y-0.5f)&&(col.gameObject.transform.position.y<=gameObject.transform.position.y+0.5f)));
+		mul = cam.GetComponent<CameraMover>().CurrentRatio;
+		yield return new WaitUntil (()=> ((col.gameObject.transform.position.x>=gameObject.transform.position.x-0.5f*mul)&&(col.gameObject.transform.position.x<=gameObject.transform.position.x+0.5f*mul)&&(col.gameObject.transform.position.y>=gameObject.transform.position.y-0.5f*mul)&&(col.gameObject.transform.position.y<=gameObject.transform.position.y+0.5f*mul)));
 		if (col != null) {
 			if (col.transform.tag == "Asteroid") {
 				gameManager.GetComponent<PlaySettings> ().GameOver ();

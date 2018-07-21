@@ -3,27 +3,44 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PlaySettings : MonoBehaviour {
 	[SerializeField]
 	public static bool paused;
+	public static int highScore;
+	public static int score = 0;
 	public Canvas pauseCanvas;
 	public Canvas gameOverCanvas;
 	private GameObject UIManager;
 	private GameSettings settings;
 	public GameObject mainAsteroid;
+	public TextMeshProUGUI hiScoreText;
+	public TextMeshProUGUI scoreText;
+	public TextMeshProUGUI GOscoreText;
 	// Use this for initialization
+
+	void Awake(){
+		highScore = PlayerPrefs.GetInt ("highScore", 0);
+	}
+
 	void Start () {
 		UIManager = GameObject.FindGameObjectWithTag ("UIManager");
 		if (UIManager != null) {
 			settings = UIManager.GetComponent<GameSettings> ();
 		}
+		score = 0;
+		hiScoreText.text = highScore.ToString ();
+		paused = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (mainAsteroid.transform.localScale.x <= 0.6f) {
 			GameOver ();
+		}
+		if (!paused) {
+			scoreText.text = score.ToString ();
 		}
 	}
 
@@ -78,7 +95,11 @@ public class PlaySettings : MonoBehaviour {
 	}
 
 	public void GameOver(){
+		if (score > highScore) {
+			PlayerPrefs.SetInt ("highScore", score);
+		}
 		paused = true;
+		GOscoreText.text = score.ToString ();
 		gameOverCanvas.gameObject.SetActive (true);
 	}
 
