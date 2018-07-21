@@ -17,6 +17,8 @@ TagManager:
   - BlackHole
   - GameManager
   - Danger
+  - SuperNova
+  - Shield
   layers:
   - Default
   - TransparentFX

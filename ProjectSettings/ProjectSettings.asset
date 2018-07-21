@@ -138,8 +138,8 @@ PlayerSettings:
       depthFormat: 1
   protectGraphicsMemory: 0
   useHDRDisplay: 0
-  targetPixelDensity: 200
-  resolutionScalingMode: 0
+  targetPixelDensity: 256
+  resolutionScalingMode: 1
   applicationIdentifier:
     Android: com.KEC.AsteroidSmash
   buildNumber: {}

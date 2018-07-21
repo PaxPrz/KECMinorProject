@@ -39,6 +39,10 @@ public class Spawner : MonoBehaviour {
 	public GameObject cam;
 	public GameObject danger;
 	private bool callDanger=false;
+
+	public float superNovaGenTime = 60f;
+	public GameObject superNova;
+	public float throwVelocity = 10f;
 	//**********************
 
 	// Use this for initialization
@@ -55,6 +59,7 @@ public class Spawner : MonoBehaviour {
 		StartCoroutine (spawnFunction ());
 		StartCoroutine (Destroyer ());
 		StartCoroutine (GenerateBlackHole ());
+		StartCoroutine (ExplodeSuperNova ());
 	}
 	
 	// Update is called once per frame
@@ -96,9 +101,9 @@ public class Spawner : MonoBehaviour {
 
 	private IEnumerator DangerSign(){
 		GameObject d = Instantiate (danger);
+		int ratio = cam.GetComponent<CameraMover> ().CurrentRatio;
+		d.transform.localScale *= ratio;
 		while (true) {
-			int ratio = cam.GetComponent<CameraMover> ().CurrentRatio;
-			d.transform.localScale *= ratio;
 			if (currentBlackHole == null) {
 				Destroy (d);
 				break;
@@ -231,6 +236,43 @@ public class Spawner : MonoBehaviour {
 				asteroidList.Add (currentBlackHole);
 				callDanger = true;
 			}
+		}
+	}
+
+	private IEnumerator ExplodeSuperNova(){
+		GameObject currentSuperNova;
+		while (true) {
+			yield return new WaitForSeconds (superNovaGenTime + Random.Range (0.0f, 60.0f));
+			Vector2 randompos = new Vector2 (Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f));
+			float curRatio = cam.GetComponent<CameraMover> ().CurrentRatio;
+			randompos.Normalize ();
+			currentSuperNova = Instantiate (superNova, randompos*5f*curRatio, Quaternion.identity);
+			currentSuperNova.transform.localScale = Vector2.zero;
+			randompos = Vector2.zero;
+			while (currentSuperNova.transform.localScale.x < curRatio) {
+				randompos.x += 0.01f * curRatio;
+				randompos.y += 0.01f * curRatio;
+				currentSuperNova.transform.localScale = randompos;
+				yield return new WaitForSeconds (0.01f);
+			}
+			int num = Random.Range (30, 50);
+			yield return new WaitForSeconds (3.0f);
+			for (int i = 0; i < num; i++) {
+				GameObject g = Instantiate (canSpawn [Random.Range (0, canSpawn.Length)], currentSuperNova.transform.position, Quaternion.identity);
+				g.transform.localScale = mainAsteroid.transform.localScale * Random.Range (0.3f, 1.0f);
+				Vector2 pos = new Vector2 (Random.Range (-1.0f, 1.0f), Random.Range (-1.0f, 1.0f));
+				pos.Normalize ();
+				g.GetComponent<Rigidbody2D> ().velocity = pos * throwVelocity*curRatio;
+				asteroidList.Add (g);
+				yield return new WaitForSeconds (0.1f);
+			}
+			while (currentSuperNova.transform.localScale.x > 0) {
+				randompos.x -= 0.05f * curRatio;
+				randompos.y -= 0.05f * curRatio;
+				currentSuperNova.transform.localScale = randompos;
+				yield return new WaitForSeconds (0.01f);
+			}
+			Destroy (currentSuperNova);
 		}
 	}
 }

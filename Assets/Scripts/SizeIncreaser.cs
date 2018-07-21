@@ -14,6 +14,7 @@ public class SizeIncreaser : MonoBehaviour {
 	public bool wasVisible = false;
 	public GameObject gameManager;
 	public GameObject cam;
+	public GameObject shield;
 	public float maxBgVel=2f;
 	//private Spawner spawn;
 	// Use this for initialization
@@ -22,6 +23,9 @@ public class SizeIncreaser : MonoBehaviour {
 		cam = GameObject.FindGameObjectWithTag ("MainCamera");
 		bgMovement = GameObject.FindGameObjectWithTag ("BgMovement");
 		gameManager = GameObject.FindGameObjectWithTag ("GameManager");
+		if (shield == null) {
+			shield = GameObject.FindGameObjectWithTag ("Shield");
+		}
 		if (gameObject.tag == "Asteroid" && SceneManager.GetActiveScene()==SceneManager.GetSceneByName("Game")) {
 			bgMovementVel = bgMovement.GetComponent<Rigidbody2D> ();
 			//spawn = gameManager.GetComponent<Spawner> ();
@@ -42,25 +46,26 @@ public class SizeIncreaser : MonoBehaviour {
 			//Debug.Log ("imapact: " + impactForce.ToString ());
 			//impactForce = col.gameObject.transform.localScale.x * impactForce ;
 
-			for (int i = 0; i < Spawner.asteroidList.Count; i++) {
-				if (Spawner.asteroidList [i] == null) {
-					Spawner.asteroidList.RemoveAt (i);
-					continue;
+				for (int i = 0; i < Spawner.asteroidList.Count; i++) {
+					if (Spawner.asteroidList [i] == null) {
+						Spawner.asteroidList.RemoveAt (i);
+						continue;
+					}
+					Rigidbody2D rb = (Spawner.asteroidList [i].GetComponent<Rigidbody2D> ());
+					if (Spawner.asteroidList [i].tag == "BlackHole") {
+						rb.velocity = resultantVector (rb.velocity, -0.5f * impactForce);	
+					} else {
+						rb.velocity = resultantVector (rb.velocity, -0.3f * impactForce);
+					}
 				}
-				Rigidbody2D rb = (Spawner.asteroidList [i].GetComponent<Rigidbody2D> ());
-				if (Spawner.asteroidList [i].tag == "BlackHole") {
-					rb.velocity = resultantVector (rb.velocity, -0.5f * impactForce);	
-				} else {
-					rb.velocity = resultantVector (rb.velocity, -0.3f*impactForce);
+				if (SceneManager.GetActiveScene () == SceneManager.GetSceneByName ("Game")) {
+					bgMovementVel.velocity = resultantVector (bgMovementVel.velocity, impactForce);
+					if (bgMovementVel.velocity.magnitude > maxBgVel) {
+						bgMovementVel.velocity = bgMovementVel.velocity.normalized * maxBgVel;
+						Debug.Log ("BGVelocity full");
+					}
 				}
-			}
-			if (SceneManager.GetActiveScene () == SceneManager.GetSceneByName ("Game")) {
-				bgMovementVel.velocity = resultantVector (bgMovementVel.velocity, impactForce);
-				if (bgMovementVel.velocity.magnitude > maxBgVel) {
-					bgMovementVel.velocity = bgMovementVel.velocity.normalized * maxBgVel;
-					Debug.Log ("BGVelocity full");
-				}
-			}
+
 			/*
 			if (spawn.blackHole != null) {
 				if (spawn.blackHole.GetComponent<Rigidbody2D> () != null) {
@@ -109,28 +114,32 @@ public class SizeIncreaser : MonoBehaviour {
 		}
 		//for Main Asteroid
 		if (col.gameObject.tag == "AsteroidWhite" && gameObject.tag == "Asteroid") {
-			float temp = (col.gameObject.transform.localScale.x / (divratio *cam.GetComponent<CameraMover>().CurrentRatio));
-			gameObject.transform.localScale = new Vector2 (gameObject.transform.localScale.x + temp, gameObject.transform.localScale.y + temp);
-
-			callExplosion (col);
-			Destroy (col.gameObject);
-			if (!PlaySettings.paused) {
-				PlaySettings.score += 1;
-			}
-
-
-		} else if (col.gameObject.tag != "AsteroidWhite" && gameObject.tag == "Asteroid") {
-			float temp = -(col.gameObject.transform.localScale.x / divratio);
-			if (col.gameObject.tag == "Comet") {
-				gameObject.transform.localScale = new Vector2 (gameObject.transform.localScale.x + 4f * temp, gameObject.transform.localScale.y + 4f * temp);
-			} else {
+			if (!shield.activeInHierarchy) {			
+				float temp = (col.gameObject.transform.localScale.x / (divratio * cam.GetComponent<CameraMover> ().CurrentRatio));
 				gameObject.transform.localScale = new Vector2 (gameObject.transform.localScale.x + temp, gameObject.transform.localScale.y + temp);
+
+				callExplosion (col);
+				Destroy (col.gameObject);
+				if (!PlaySettings.paused) {
+					PlaySettings.score += 1;
+				}
 			}
-			if (GameSettings.isVibrate) {
-				cam.GetComponent<CameraMover> ().shakeCamera ();
+		}
+
+		else if (col.gameObject.tag != "AsteroidWhite" && gameObject.tag == "Asteroid") {
+			if (!shield.activeInHierarchy) {			
+				float temp = -(col.gameObject.transform.localScale.x / divratio);
+				if (col.gameObject.tag == "Comet") {
+					gameObject.transform.localScale = new Vector2 (gameObject.transform.localScale.x + 4f * temp, gameObject.transform.localScale.y + 4f * temp);
+				} else {
+					gameObject.transform.localScale = new Vector2 (gameObject.transform.localScale.x + temp, gameObject.transform.localScale.y + temp);
+				}
+				if (GameSettings.isVibrate) {
+					cam.GetComponent<CameraMover> ().shakeCamera ();
+				}
+				callExplosion (col);
+				Destroy (col.gameObject);
 			}
-			callExplosion (col);
-			Destroy (col.gameObject);
 		}
 	}
 
@@ -157,6 +166,7 @@ public class SizeIncreaser : MonoBehaviour {
 
 	private IEnumerator DestroySound(GameObject g){
 		yield return new WaitForSeconds (2.0f);
+		if(g!=null)
 		Destroy (g);
 		yield return null;
 	}

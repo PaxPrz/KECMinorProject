@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BlackHole : MonoBehaviour {
-	public float rotateSpeed = 100f;
+	public float rotateSpeed = -1000f;
 	private GameObject gameManager;
 	private float mul;
-	public GameObject cam;
+	private GameObject cam;
 	//GameObject c;
 	// Use this for initialization
 	void Start () {

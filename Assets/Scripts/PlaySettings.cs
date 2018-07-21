@@ -10,6 +10,7 @@ public class PlaySettings : MonoBehaviour {
 	public static bool paused;
 	public static int highScore;
 	public static int score = 0;
+	public static bool asteroidGenSelect = false;
 	public Canvas pauseCanvas;
 	public Canvas gameOverCanvas;
 	private GameObject UIManager;
@@ -18,10 +19,34 @@ public class PlaySettings : MonoBehaviour {
 	public TextMeshProUGUI hiScoreText;
 	public TextMeshProUGUI scoreText;
 	public TextMeshProUGUI GOscoreText;
+
+	public GameObject shield;
+	private float shieldActiveTime=0f;
+	public float shieldDefaultTime=10f;
+	private int shieldCount;
+	public int ShieldCount {
+		get { 
+			return shieldCount;
+		}
+		private set{ }
+	}
+	private int asteroidCount;
+	public int AsteroidCount {
+		get { 
+			return asteroidCount;
+		}
+		private set{ }
+	}
+	public TextMeshProUGUI shieldCountText;
+	public TextMeshProUGUI asteroidCountText;
 	// Use this for initialization
 
 	void Awake(){
 		highScore = PlayerPrefs.GetInt ("highScore", 0);
+		shieldCount = PlayerPrefs.GetInt ("shieldCount", 99);
+		asteroidCount = PlayerPrefs.GetInt ("asteroidCount", 99);
+		shieldCountText.text = ShieldCount.ToString ();
+		asteroidCountText.text = AsteroidCount.ToString ();
 	}
 
 	void Start () {
@@ -103,4 +128,35 @@ public class PlaySettings : MonoBehaviour {
 		gameOverCanvas.gameObject.SetActive (true);
 	}
 
+	public void OnShield(){
+		if (shieldCount > 0) {
+			shieldCount--;
+			PlayerPrefs.SetInt ("shieldCount", shieldCount);
+			shieldCountText.text = ShieldCount.ToString ();
+			if (!shield.activeInHierarchy) {
+				shield.SetActive (true);
+			}
+			shieldActiveTime += shieldDefaultTime;
+			if (shieldActiveTime <= shieldDefaultTime) {
+				StartCoroutine (shieldProtect ());
+			}
+		}
+	}
+
+	private IEnumerator shieldProtect(){
+		while (shieldActiveTime>0f) {
+			shieldActiveTime -= Time.deltaTime;
+			yield return null;
+		}
+		shield.SetActive (false);
+	}
+
+	public void OnAsteroidGenerate(){
+		if (!asteroidGenSelect && asteroidCount>0) {
+			asteroidCount--;
+			PlayerPrefs.SetInt ("asteroidCount", asteroidCount);
+			asteroidCountText.text = AsteroidCount.ToString ();
+			asteroidGenSelect = true;
+		}
+	}
 }
