@@ -66,6 +66,9 @@ public class Spawner : MonoBehaviour {
 	void Update () {
 		if (Input.GetKeyDown (KeyCode.Escape)) {
 			SceneManager.LoadScene (0);
+			if (PlaySettings.paused) {
+				Time.timeScale = 1.0f;
+			}
 			if(UIManager!=null)
 				Destroy (UIManager);
 		}
