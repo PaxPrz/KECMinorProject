@@ -88,7 +88,7 @@ public class UIScript : MonoBehaviour {
 		stopActivity = true;
 		StopCoroutine (InvisibleAsteroid ());
 		gameObject.GetComponent<Movement2D> ().enabled = false;
-		SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex + 1);
+		SceneManager.LoadScene ("Game");
 		gameObject.GetComponent<UIScript> ().enabled = false;
 	}
 

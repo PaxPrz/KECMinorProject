@@ -6,7 +6,7 @@ using UnityEngine.Audio;
 
 
 public class GameSettings:MonoBehaviour{
-	public static float force = 30f;
+	public static float force = 50f;
 		public static bool isSound=true;
 		public static bool isVibrate = true;
 		public static float spawnRate = 0.5f;

@@ -19,6 +19,8 @@ TagManager:
   - Danger
   - SuperNova
   - Shield
+  - AdManager
+  - Bullet
   layers:
   - Default
   - TransparentFX

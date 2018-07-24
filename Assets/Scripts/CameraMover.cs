@@ -133,6 +133,9 @@ public class CameraMover : MonoBehaviour {
 	public IEnumerator Shake(){
 		Vector3 origPosition = gameObject.transform.localPosition;
 		float elapsedTime = 0.0f;
+
+		Handheld.Vibrate ();
+
 		while (elapsedTime <= shakeTime) {
 			Vector3 randomPoint = origPosition + Random.insideUnitSphere * shakeAmount;
 			gameObject.transform.localPosition = Vector3.Lerp (gameObject.transform.localPosition, randomPoint, Time.deltaTime * shakeSpeed);

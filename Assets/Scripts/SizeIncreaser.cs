@@ -16,6 +16,7 @@ public class SizeIncreaser : MonoBehaviour {
 	public GameObject cam;
 	public GameObject shield;
 	public float maxBgVel=2f;
+	private CameraMover camMover;
 	//private Spawner spawn;
 	// Use this for initialization
 
@@ -30,6 +31,7 @@ public class SizeIncreaser : MonoBehaviour {
 			bgMovementVel = bgMovement.GetComponent<Rigidbody2D> ();
 			//spawn = gameManager.GetComponent<Spawner> ();
 		}
+		camMover = cam.GetComponent<CameraMover> ();
 	}
 
 	void Update(){
@@ -80,7 +82,7 @@ public class SizeIncreaser : MonoBehaviour {
 			//Do nothing
 		}else if (gameObject.tag == col.gameObject.tag) {
 			if (gameObject.transform.localScale.x > col.gameObject.transform.localScale.x) {
-				float temp = (col.gameObject.transform.localScale.x / (divratio *cam.GetComponent<CameraMover>().CurrentRatio));
+				float temp = (col.gameObject.transform.localScale.x / (divratio *camMover.CurrentRatio));
 				gameObject.transform.localScale = new Vector2 (gameObject.transform.localScale.x + temp, gameObject.transform.localScale.y + temp);
 
 				callExplosion (col);
@@ -94,6 +96,15 @@ public class SizeIncreaser : MonoBehaviour {
 			}
 
 		} else if(gameObject.transform.tag!="Asteroid" && col.gameObject.transform.tag!="Asteroid"){
+			if (col.gameObject.tag == "Bullet") {
+				gameObject.transform.localScale = new Vector2 (gameObject.transform.localScale.x - 0.1f * camMover.CurrentRatio, gameObject.transform.localScale.y - 0.1f * camMover.CurrentRatio);
+				callBulletExplosion (col);
+				Destroy (col.gameObject);
+				if (gameObject.transform.localScale.x < 0.5f) {
+					Destroy (gameObject);
+				}
+			}
+			else{
 			callExplosion (col);
 			bool a;
 			if ((a=(gameObject.transform.localScale.x > 5f * col.gameObject.transform.localScale.x)) || ((col.gameObject.transform.localScale.x > 5f * gameObject.transform.localScale.x))) {
@@ -111,11 +122,12 @@ public class SizeIncreaser : MonoBehaviour {
 				PlaySettings.score += 1;
 			}
 			//StartCoroutine (ExplosionDestroyer (gameObject.transform));
+			}
 		}
 		//for Main Asteroid
 		if (col.gameObject.tag == "AsteroidWhite" && gameObject.tag == "Asteroid") {
 			if (!shield.activeInHierarchy) {			
-				float temp = (col.gameObject.transform.localScale.x / (divratio * cam.GetComponent<CameraMover> ().CurrentRatio));
+				float temp = (col.gameObject.transform.localScale.x / (divratio * camMover.CurrentRatio));
 				gameObject.transform.localScale = new Vector2 (gameObject.transform.localScale.x + temp, gameObject.transform.localScale.y + temp);
 
 				callExplosion (col);
@@ -127,18 +139,24 @@ public class SizeIncreaser : MonoBehaviour {
 		}
 
 		else if (col.gameObject.tag != "AsteroidWhite" && gameObject.tag == "Asteroid") {
-			if (!shield.activeInHierarchy) {			
-				float temp = -(col.gameObject.transform.localScale.x / divratio);
-				if (col.gameObject.tag == "Comet") {
-					gameObject.transform.localScale = new Vector2 (gameObject.transform.localScale.x + 4f * temp, gameObject.transform.localScale.y + 4f * temp);
+			if (!shield.activeInHierarchy) {
+				if (col.gameObject.tag == "Bullet") {
+					gameObject.transform.localScale = new Vector2 (gameObject.transform.localScale.x - 0.05f * camMover.CurrentRatio, gameObject.transform.localScale.y - 0.05f * camMover.CurrentRatio);
+					callBulletExplosion (col);
+					Destroy (col.gameObject);
 				} else {
-					gameObject.transform.localScale = new Vector2 (gameObject.transform.localScale.x + temp, gameObject.transform.localScale.y + temp);
+					float temp = -(col.gameObject.transform.localScale.x / divratio);
+					if (col.gameObject.tag == "Comet") {
+						gameObject.transform.localScale = new Vector2 (gameObject.transform.localScale.x + 4f * temp, gameObject.transform.localScale.y + 4f * temp);
+					} else {
+						gameObject.transform.localScale = new Vector2 (gameObject.transform.localScale.x + temp, gameObject.transform.localScale.y + temp);
+					}
+					if (GameSettings.isVibrate) {
+						cam.GetComponent<CameraMover> ().shakeCamera ();
+					}
+					callExplosion (col);
+					Destroy (col.gameObject);
 				}
-				if (GameSettings.isVibrate) {
-					cam.GetComponent<CameraMover> ().shakeCamera ();
-				}
-				callExplosion (col);
-				Destroy (col.gameObject);
 			}
 		}
 	}
@@ -158,6 +176,13 @@ public class SizeIncreaser : MonoBehaviour {
 			GameObject soundObj = Instantiate (sound);
 			StartCoroutine (DestroySound (soundObj));
 		}
+	}
+
+	void callBulletExplosion(Collision2D col){
+		GameObject explosion = Instantiate (PlayerExplosion, transform.position, transform.rotation);
+		explosion.transform.localScale = col.gameObject.transform.localScale / 10f;
+		GameObject soundObj = Instantiate (sound);
+		StartCoroutine (DestroySound (soundObj));
 	}
 
 	private Vector2 resultantVector(Vector2 prev, Vector2 force){

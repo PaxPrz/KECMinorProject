@@ -19,6 +19,11 @@ public class PlaySettings : MonoBehaviour {
 	public TextMeshProUGUI hiScoreText;
 	public TextMeshProUGUI scoreText;
 	public TextMeshProUGUI GOscoreText;
+	AndroidJavaObject currentActivity;
+	public GameObject giftPanel;
+	public Text shieldText;
+	public Text asteroidText;
+	private GameObject ad;
 
 	public GameObject shield;
 	private float shieldActiveTime=0f;
@@ -57,6 +62,8 @@ public class PlaySettings : MonoBehaviour {
 		score = 0;
 		hiScoreText.text = highScore.ToString ();
 		paused = false;
+
+		ad = GameObject.FindGameObjectWithTag ("AdManager");
 	}
 	
 	// Update is called once per frame
@@ -119,7 +126,29 @@ public class PlaySettings : MonoBehaviour {
 		paused = false;
 	}
 
+	public void onViewAd(){
+		if (ad != null) {
+			AdManager.Instance.ShowAllAd ();
+			if (AdManager.Instance.adShown) {
+				GiveGifts ();
+			}
+		}
+		AdManager.Instance.adShown = false;
+	}
+
+	private void GiveGifts(){
+		int shield_gift = Random.Range (1, 2);
+		int asteroid_gift = Random.Range (1, 2);
+		PlayerPrefs.SetInt ("shieldCount", PlayerPrefs.GetInt ("shieldCount") + shield_gift);
+		PlayerPrefs.SetInt ("asteroidCount", PlayerPrefs.GetInt ("asteroidCount") + asteroid_gift);
+		giftPanel.SetActive (true);
+		shieldText.text = shield_gift.ToString ();
+		asteroidText.text = asteroid_gift.ToString ();
+	}
+
+
 	public void GameOver(){
+		giftPanel.SetActive (false);
 		if (score > highScore) {
 			PlayerPrefs.SetInt ("highScore", score);
 		}

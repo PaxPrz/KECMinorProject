@@ -65,7 +65,7 @@ public class Spawner : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown (KeyCode.Escape)) {
-			SceneManager.LoadScene (0);
+			SceneManager.LoadScene ("UI");
 			if (PlaySettings.paused) {
 				Time.timeScale = 1.0f;
 			}

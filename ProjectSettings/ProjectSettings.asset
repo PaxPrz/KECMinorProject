@@ -139,7 +139,7 @@ PlayerSettings:
   protectGraphicsMemory: 0
   useHDRDisplay: 0
   targetPixelDensity: 256
-  resolutionScalingMode: 1
+  resolutionScalingMode: 0
   applicationIdentifier:
     Android: com.KEC.AsteroidSmash
   buildNumber: {}
@@ -506,7 +506,8 @@ PlayerSettings:
   webGLUseEmbeddedResources: 0
   webGLUseWasm: 0
   webGLCompressionFormat: 1
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    4: NO_GPGS
   platformArchitecture: {}
   scriptingBackend: {}
   incrementalIl2cppBuild: {}
